@@ -34,15 +34,8 @@ BENCHMARK_PARAMS = pd.read_csv(S3_URL.format(
 PIPELINE_DIR = os.path.join(os.path.dirname(__file__), 'pipelines', 'verified')
 
 VERIFIED_PIPELINES = [
-    'arima', 'lstm_dynamic_threshold', 'azure', 'tadgan'
+    'arima', 'lstm_dynamic_threshold', 'azure', 'tadgan', 'lstm_autoencoder', 'dense_autoencoder'
 ]
-
-VERIFIED_PIPELINES_GPU = {
-    'arima': 'arima',
-    'lstm_dynamic_threshold': 'lstm_dynamic_threshold_gpu',
-    'azure': 'azure',
-    'tadgan': 'tadgan_gpu'
-}
 
 
 def _load_signal(signal, test_split):
@@ -354,7 +347,7 @@ def benchmark(pipelines=None, datasets=None, hyperparameters=None, metrics=METRI
     return _sort_leaderboard(results, rank, metrics)
 
 
-def main(cuda=False, distributed=False):
+def main(distributed=False):
     # output path
     version = "results.csv"
     output_path = os.path.join(BENCHMARK_PATH, 'results', version)
@@ -366,8 +359,6 @@ def main(cuda=False, distributed=False):
 
     # pipelines
     pipelines = VERIFIED_PIPELINES
-    if cuda:
-        pipelines = VERIFIED_PIPELINES_GPU
 
     results = benchmark(
         pipelines=pipelines, metrics=metrics, output_path=output_path, distributed=distributed)
